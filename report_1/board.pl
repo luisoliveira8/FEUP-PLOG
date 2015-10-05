@@ -1,13 +1,21 @@
 %==============================================================%
 %================ Create empty table ==========================%
 %==============================================================%
-createEmptyBoard([A|B], N) :-
-	N < 10,
-	N2 is N - 1,
-	A is createEmptyBoard([0|B], N2),
-	B is createEmptyBoard([0|B], N2).
+createEmptyLine(A, M, M).
 
-createEmptyBoard([A|B], N).
+createEmptyLine([A|B], N, M) :-
+	N < M,
+	N1 is N + 1,
+	A is 0,
+	createEmptyLine(B, N1, M).
+	
+createEmptyBoard([BoardHead | BoardTail], M, M).	
+	
+createEmptyBoard([BoardHead | BoardTail], N, M) :-
+	N < M,
+	N1 is N + 1,
+	createEmptyLine(BoardHead, 0, M),
+	createEmptyBoard(BoardTail, N1, M).
 %==============================================================%
 
 
@@ -84,8 +92,7 @@ printIdsOfColumns(A) :-
 %-----------------------------------------%
 %------------print a line-----------------%
 %-----------------------------------------%
-printLine([A|B]) :-
-	B == [],
+printLine([A|[]]) :-
 	write(A).
 	
 printLine([A|B]) :-
@@ -96,9 +103,7 @@ printLine([A|B]) :-
 %-----------------------------------------%
 %------------print all cells--------------%
 %-----------------------------------------%
-printAllCells([A|B]) :-
-	B == [],
-	printLine(A).
+printAllCells([A|[]]).
 	
 printAllCells([A|B]) :-
 	printLine(A),
@@ -112,6 +117,7 @@ printAllCells([A|B]) :-
 printBoard(A) :-
 	printIdsOfColumns(A),
 	nl,
-	createEmptyBoard(Board, A),
+	
+	createEmptyBoard(Board,0, A),
 	printAllCells(Board).
 %-----------------------------------------%
