@@ -1,3 +1,5 @@
+:- include('preset.pl').
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Create empty table %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6,7 +8,7 @@ createEmptyLine(A, M, M).
 createEmptyLine([A|B], N, M) :-
 	N < M,
 	N1 is N + 1,
-	A = '  ',
+	A = empty,
 	createEmptyLine(B, N1, M).
 	
 createEmptyBoard([BoardHead | BoardTail], M, M).	
@@ -89,11 +91,13 @@ startPrintLine(A, I) :-
 	printLine(A).
 
 printLine([A|[]]) :-
-	write(A),
+	means(A, T),
+	write(T),
 	write(' |').
 	
 printLine([A|B]) :-
-	write(A),
+	means(A, T),
+	write(T),
 	write(' | '),
 	printLine(B).
 %#########################################################%
