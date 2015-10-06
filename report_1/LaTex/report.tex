@@ -6,6 +6,7 @@
 	\usepackage{graphicx}
 	\usepackage{verbatim}
 	\usepackage{wrapfig, blindtext}
+	\usepackage{listings}
 
 	\begin{document}
 	
@@ -15,13 +16,15 @@
 	\title{\Huge\textbf{Q!nto}\linebreak\linebreak\linebreak
 	\Large\textbf{Relatório Intercalar}\linebreak\linebreak
 	\linebreak\linebreak
-	\includegraphics[scale=0.1]{feup-logo.png}\linebreak\linebreak
+	\includegraphics[scale=0.1]{./res/feup-logo.png}\linebreak\linebreak
 	\linebreak\linebreak
 	\Large{Mestrado Integrado em Engenharia Informática e Computação} \linebreak\linebreak
 	\Large{Programação em Lógica}\linebreak
 		}
 	
+
 	\author{
+	\textbf{Grupo Q!nto\_1:}\\
 	João Miguel Fidalgo Esteves Nogueira - up201303882 \\
 	Luís Miguel da Costa Oliveira - up201304515 \\
 	\linebreak\linebreak \\
@@ -30,11 +33,6 @@
 	
 	\maketitle
 	\thispagestyle{empty}
-	
-	\newpage
-	%************************************************************************************************
-	\tableofcontents
-	%************************************************************************************************
 	
 	\newpage
 	
@@ -46,7 +44,7 @@
 	Este jogo faz parte de uma coleção de três jogos chamada Triple Play que é uma coleção de jogos de tabuleiro.
 	
 	\begin{wrapfigure}{R}{0.4\textwidth}
-	\includegraphics[width=0.4\textwidth]{cards.png}
+	\includegraphics[width=0.4\textwidth]{./res/cards.png}
 	\caption{\label{fig:Baralho}Baralho}
 	\end{wrapfigure}
 	
@@ -90,5 +88,62 @@
 	
 	%************************************************************************************************
 	\section{Representação do estado do Jogo}
+
+	O \textit{Q!nto}, embora não seja um jogo de tabuleiro, basea-se na posição relativa das cartas na mesa. Por esse motivo optámos por guardar a informação do jogo numa lista de listas. Esta lista de listas será representada no ecrã tal como um tabuleiro.
+	
+	\subsection{Código da estrutura de dados da mesa}
+	
+	\small
+	\lstset{language=Prolog}
+	\lstinputlisting{./res/createTable.pl}
+	\normalsize
+	O código acima é responsável por criar uma lista de listas que representam uma lista de linhas para guardar a informação do conteúdo da mesa. Como é suposto no início do jogo, a mesa é inicializada como vazia.\\
+	
+	\newpage
+	
+	\subsection{Código de representação do Ambiente de jogo}
+	\small
+	\lstset{language=Prolog}
+	\lstinputlisting{./res/print.pl}
+	\normalsize
+	O Código acima é responsável por inicializar a mesa e imprimi-la no ecrã.
+	
+	No entanto, este não é todo o código responsável pela impressão da lista de listas. Os predicados em falta percorrem as linhas imprimindo cada elemento, tal como se certificam de que a formatação do texto é a mais correta possível por forma a garantir que o utilizador tem uma forma eficiente de perceber o estado atual do jogo.
+	
+	\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.2]{./res/cardCode.png}
+	\caption{Código das Cartas}
+	\label{fig:example1}
+	\end{center}
+	\end{figure}
+	
+	\newpage
+	\subsection{Exemplos de Ambientes de jogo}
+	
+	\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.7]{./res/example_1.png}
+	\caption{Exemplo de Ambiente Gráfico}
+	\label{fig:example1}
+	\end{center}
+	\end{figure}
+	
+	\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.7]{./res/example_2.png}
+	\caption{Exemplo de Ambiente Gráfico}
+	\label{fig:example2}
+	\end{center}
+	\end{figure}
+	
+	\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.7]{./res/example_3.png}
+	\caption{Exemplo de Ambiente Gráfico}
+	\label{fig:example3}
+	\end{center}
+	\end{figure}
+		
 	
 	\end{document}
