@@ -60,7 +60,7 @@ printColumnIds(A, Max) :-	%case > 9
 printColumnIds(Max, Max) :-
 	write('  ').
 
-printCard([A,B]) :-
+printCard([A|B]) :-
 	means(A, A1),
 	means(B, B1),
 	write(A1),
@@ -109,7 +109,7 @@ printAllCells([A|B], BoardHeight, I) :-
 
 printAllCells(_,_,_).
 
-getLength([L | A], BoardLength) :-
+getLength([L | _], BoardLength) :-
 	length(L, BoardLength).
 
 %######################printBoard#########################%
@@ -123,14 +123,12 @@ printBoard(Board) :-
 	
 	
 %#################### Put on Board ########################
-%%% 1. position; 2. element to use on replacement; 3. current list; 4. resultant list.
-putOnColumn(0, Elem, [H|L], [Elem|L]).
+putOnColumn(0, Elem, [_|L], [Elem|L]).
 putOnColumn(I, Elem, [H|L], [H|ResL]):-
 	I > 0,
 	I1 is I - 1,
 	putOnColumn(I1, Elem, L, ResL).
 	
-%%% 1. element row; 2. element column; 3. element to use on replacement; 3. current matrix; 4. resultant matrix.
 putOnBoard(0, ElemCol, NewElem, [RowAtTheHead|RemainingRows], [NewRowAtTheHead|RemainingRows]):-
 	putOnColumn(ElemCol, NewElem, RowAtTheHead, NewRowAtTheHead).
 putOnBoard(ElemRow, ElemCol, NewElem, [RowAtTheHead|RemainingRows], [RowAtTheHead|ResultRemainingRows]):-
@@ -139,21 +137,91 @@ putOnBoard(ElemRow, ElemCol, NewElem, [RowAtTheHead|RemainingRows], [RowAtTheHea
 	putOnBoard(ElemRow1, ElemCol, NewElem, RemainingRows, ResultRemainingRows).
 	
 %%%%%%%%%%%%%%%%%%%%%%%%% Check Board %%%%%%%%%%%%%%%%%%%%%%%%%
-checkBoardSize(Board, ResultBoard) :-
-	checkUpperLine(Board) -> addLine(Board, ResultBoard).
-
-checkUpperLine([Line1 | Lines]) :-
+checkBoardSize(Board, ResultBoard4) :-
+	if(checkUpperLine(Board), addLineTop(Board, ResultBoard1), ResultBoard1 = Board),
+	if(checkLowerLine(ResultBoard1), addLineBottom(ResultBoard1, ResultBoard2), ResultBoard2 = ResultBoard1),
+	if(checkLeftColumn(ResultBoard2), ResultBoard3 = ResultBoard2, addColumnLeft(ResultBoard2, ResultBoard3)),
+	if(checkRightColumn(ResultBoard3), ResultBoard4 = ResultBoard3, addColumnRight(ResultBoard3, ResultBoard4)).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%% Check If Upper Line has any card %%%%%%%%%%%%%%%%%%%%%%%%%
+checkUpperLine([Line1 | _]) :-
 	lineHasSomething(Line1).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%% Check If Lower Line has any card %%%%%%%%%%%%%%%%%%%%%%%%%
+checkLowerLine([Line1 | []]) :-
+	!, lineHasSomething(Line1).
+checkLowerLine([_ | Lines]) :-
+	!, checkLowerLine(Lines).
 
-lineHasSomething([]) :-
+%%%%%%%%%%%%%%%%%%%%%%%%% Check If Left Column has any card %%%%%%%%%%%%%%%%%%%%%%%%%
+checkLeftColumn([Line1 | []]) :-
+	checkFirstElem(Line1).
+checkLeftColumn([Line1 | Lines]) :-
+	checkFirstElem(Line1),
+	checkLeftColumn(Lines).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%% Check If Right Column has any card %%%%%%%%%%%%%%%%%%%%%%%%%
+checkRightColumn([Line1 | []]) :-
+	checkLastElem(Line1).
+checkRightColumn([Line1 | Lines]) :-
+	checkLastElem(Line1),
+	checkRightColumn(Lines).
+
+checkLastElem([[empty, empty] | []]) :-
+	!.
+checkLastElem([_ | []]) :-
+	!,
 	fail.
+checkLastElem([_ | Elems]) :-
+	checkLastElem(Elems).
+	
+checkFirstElem([[empty, empty] | _]) :-
+	!.
+checkFirstElem(_) :-
+	!,
+	fail.
+	
+%%%%%%%%%%%%%%%%%%%%%%%%% Adds Column to the Left %%%%%%%%%%%%%%%%%%%%%%%%%%%
+addColumnLeft([ListX | []], Final) :-
+	append([[empty,empty]], ListX, TempX),
+	append([TempX | _], [], Final).
+addColumnLeft([ListX | ListR], [ResultX | ResultR]) :-
+	append([[empty,empty]], ListX, ResultX),
+	addColumnLeft(ListR, ResultR).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%% Adds Column to the Right %%%%%%%%%%%%%%%%%%%%%%%%%%%
+addColumnRight([ListX | []], Final) :-
+	append(ListX, [[empty,empty]], TempX),
+	append([TempX | _], [], Final).
+addColumnRight([ListX | ListR], [ResultX | ResultR]) :-
+	append(ListX, [[empty,empty]], ResultX),
+	addColumnRight(ListR, ResultR).
+	
+%%%%%%%%%%%%%%%%%%%%%%%% Adds Empty Elem at the beginning %%%%%%%%%%%%%%%%%%%%
+addEmptyElem([RFirstElem | RElems], OElems) :-
+	RFirstElem = [empty, empty],
+	fillTheRest(RElems, OElems).
+
+%%%%%%%%%%%%%%%%%%%%%%%%% Check If Line has any card %%%%%%%%%%%%%%%%%%%%%%%%%
+lineHasSomething([]) :-
+	!, fail.
 lineHasSomething([[empty,empty] | Rest]) :-
-	lineHasSomething(Rest).
+	!, lineHasSomething(Rest).
 lineHasSomething(_).
 
-addLine([Line1 | RLines], [Line1R | RLinesR]) :-
+%%%%%%%%%%%%%%%%%%%%%%%%% Adds Line at the top %%%%%%%%%%%%%%%%%%%%%%%%%
+addLineTop([Line1 | RLines], [Line1R | RLinesR]) :-
 	length(Line1, Size),
 	createEmptyLine(Line1R, 0, Size),
 	fillTheRest([Line1 | RLines], RLinesR).
-	
 fillTheRest(A, A).
+
+%%%%%%%%%%%%%%%%%%%%%%%%% Adds Line at the bottom %%%%%%%%%%%%%%%%%%%%%%%%%
+addLineBottom([], [Line1 | _], Size) :-
+	createEmptyLine(Line1, 0, Size).
+addLineBottom([Line1 | RLines], [Line1 | RLinesR]) :-
+	length(Line1, Size),
+	addLineBottom(RLines, RLinesR, Size).
+addLineBottom([Line1 | RLines], [Line1 | RLinesR], _) :-
+	length(Line1, Size),
+	addLineBottom(RLines, RLinesR, Size).

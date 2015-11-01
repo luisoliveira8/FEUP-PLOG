@@ -1,6 +1,3 @@
-:- use_module(library(random)).
-:- use_module(library(lists)).
-
 getChar(In) :-
 	get_char(In),
 	get_char(_).

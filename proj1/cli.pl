@@ -1,13 +1,6 @@
-:- include('utilities.pl').
-:- include('humanVsHuman.pl').
-
-%%%%%%%%%%%%%%% First call to the program %%%%%%%%%%%%%%%%%%%
-startGame :- 
-	mainMenu.
-
 %%%%%%%%%%%%%%% Clears the entire screen %%%%%%%%%%%%%%%%%%%
 clearScreen :-
-	printBlank(75).
+	printBlank(65).
 	
 %%%%%%%%%%%%%%% Blank line %%%%%%%%%%%%%%%%%%%
 printBlank(A) :-
@@ -93,4 +86,16 @@ printPlayMenu :-
 	write('==             3 - PC vs PC                                    ==\n'),
 	write('==             4 - Go back                                     ==\n'),
 	write('==                                                             ==\n'),
+	write('=================================================================\n').
+	
+printPlayer1 :-
+	clearScreen,
+	write('=================================================================\n'),
+	write('==                        PLAYER 1`s turn                      ==\n'),
+	write('=================================================================\n').
+	
+printPlayer2 :-
+	clearScreen,
+	write('=================================================================\n'),
+	write('==                        PLAYER 2`s turn                      ==\n'),
 	write('=================================================================\n').
