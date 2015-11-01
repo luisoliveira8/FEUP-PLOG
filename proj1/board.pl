@@ -88,29 +88,37 @@ printLine([A|B]) :-
 	printLine(B).
 
 %#####################print all cells#####################%
-printAllCells([A|[]], BoardHeight, BoardLength, I) :-
+printAllCells([A|[]], BoardHeight, I) :-
 	I < BoardHeight,
 	I1 is I + 1,
 	startPrintLine(A, I1),
 	nl,
+	length(A, BoardLength),
 	startPrintDivisor(1, BoardLength),
 	nl.
 	
-printAllCells([A|B], S, I) :-
-	I < S,
+printAllCells([A|B], BoardHeight, I) :-
+	I < BoardHeight,
 	I1 is I + 1,
 	startPrintLine(A, I1),
 	nl,
-	startPrintDivisor(1, S),
+	length(A, BoardLength),
+	startPrintDivisor(1, BoardLength),
 	nl,
-	printAllCells(B, S, I1).
+	printAllCells(B, BoardHeight, I1).
 
 printAllCells(_,_,_).
+
+getLength([L | A], BoardLength) :-
+	length(L, BoardLength).
+
 %######################printBoard#########################%
-printBoard(Board, BoardHeight, BoardLength) :-
+printBoard(Board) :-
+	length(Board, BoardHeight),
+	getLength(Board, BoardLength),
 	printIdsOfColumns(BoardLength),
 	nl,
-	printAllCells(Board, BoardHeight, BoardLength, 0).
+	printAllCells(Board, BoardHeight, 0).
 	
 	
 	
@@ -129,3 +137,23 @@ putOnBoard(ElemRow, ElemCol, NewElem, [RowAtTheHead|RemainingRows], [RowAtTheHea
 	ElemRow > 0,
 	ElemRow1 is ElemRow - 1,
 	putOnBoard(ElemRow1, ElemCol, NewElem, RemainingRows, ResultRemainingRows).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%% Check Board %%%%%%%%%%%%%%%%%%%%%%%%%
+checkBoardSize(Board, ResultBoard) :-
+	checkUpperLine(Board) -> addLine(Board, ResultBoard).
+
+checkUpperLine([Line1 | Lines]) :-
+	lineHasSomething(Line1).
+
+lineHasSomething([]) :-
+	fail.
+lineHasSomething([[empty,empty] | Rest]) :-
+	lineHasSomething(Rest).
+lineHasSomething(_).
+
+addLine([Line1 | RLines], [Line1R | RLinesR]) :-
+	length(Line1, Size),
+	createEmptyLine(Line1R, 0, Size),
+	fillTheRest([Line1 | RLines], RLinesR).
+	
+fillTheRest(A, A).
