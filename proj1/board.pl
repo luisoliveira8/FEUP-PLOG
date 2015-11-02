@@ -225,3 +225,27 @@ addLineBottom([Line1 | RLines], [Line1 | RLinesR]) :-
 addLineBottom([Line1 | RLines], [Line1 | RLinesR], _) :-
 	length(Line1, Size),
 	addLineBottom(RLines, RLinesR, Size).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%% Check if spot is enpty %%%%%%%%%%%%%%%%%%%%%%%%%
+checkIfACardIsInTheSpot(0, ElemCol, [BoardHead | BoardTail]) :-
+	checkIfACardIsInTheLine(ElemCol, BoardHead).
+checkIfACardIsInTheSpot(ElemRow, ElemCol, [BoardHead | BoardTail]) :-
+	ElemRow > 0,
+	ElemRow1 is ElemRow - 1,
+	checkIfACardIsInTheSpot(ElemRow1, ElemCol, BoardTail).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%% Check if spot is empty in line %%%%%%%%%%%%%%%%%
+checkIfACardIsInTheLine(0, [[empty, empty]|_]).
+checkIfACardIsInTheLine(0, _) :-
+		fail.
+checkIfACardIsInTheLine(Elem, [LineHead | LineTail]) :-
+	Elem > 0,
+	Elem1 is Elem - 1,
+	checkIfACardIsInTheLine(Elem1, LineTail).
+	
+	
+	
+	
+	
+	
+	
