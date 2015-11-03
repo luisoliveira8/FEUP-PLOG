@@ -15,7 +15,7 @@ playerMove(Deck, ResultDeck, Board, ResultBoard, A) :-
 	write(' cards\n\n'),
 	
 	
-	getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board),
+	getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck),
 	
 	write(Col),
 	
@@ -35,8 +35,8 @@ play(Deck_1, Deck_2, Board) :-
 	play(ResultDeck_1, ResultDeck_2, ResultBoard_4).
 	
 %%%%%%%%%%%%%%%%%%%%% Gets correct position %%%%%%%%%%%%%%%%%%%%%%%%%%
-getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board) :-
-	
+getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck) :-
+		
 	write('Choose the Card to Play (end the number with"."): '),
 	getSelection0(SelectedCardTemp, NumberOfCards),
 	write('In What Line do you want to put it: '),
@@ -45,10 +45,16 @@ getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board) :-
 	getSelection1(SelectedLine, BoardLength),
 	write('In What Column do you want to put it: '),
 	getSelection1(SelectedColumn, BoardHeight),
+	Deck2 = Deck,
+	removeCardFromDeck(Deck2, _, SelectedCardTemp, 0, RemovedCard),
+	
 	
 	(
-		checkIfACardIsInTheSpot(SelectedLine, SelectedColumn, Board) -> write('\nPosition Accepted\n'), Col is SelectedColumn, Line is SelectedLine, SelectedCard is SelectedCardTemp;
+		(
+			checkIfACardIsInTheSpot(SelectedLine, SelectedColumn, Board),
+			checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, Board, RemovedCard)
+		) -> write('\nPosition Accepted\n'), Col is SelectedColumn, Line is SelectedLine, SelectedCard is SelectedCardTemp;
 		
 		write('\nPosition unaccepted\n'),
-		getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board)
+		getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck)
 	).

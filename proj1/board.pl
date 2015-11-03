@@ -243,9 +243,46 @@ checkIfACardIsInTheLine(Elem, [LineHead | LineTail]) :-
 	Elem1 is Elem - 1,
 	checkIfACardIsInTheLine(Elem1, LineTail).
 	
+%%%%%%%%%%%%%%%%%%%%%%%%% Checks if There are not more than 4 in a row %%%%%%%%%%%%%%%%%%%%
+
+checkNumberInLine(0, [LineHead | LineTail], Number, Sequence, SelectedCard) :-
+	append([SelectedCard], Sequence, SequenceRes),
+	N is Number + 1,
+	!,
+	checkNumberInLine(-1, LineTail, N, SequenceRes, SelectedCard).
 	
+checkNumberInLine(SelectedColumn, [[empty, empty] | LineTail], _, Sequence, SelectedCard) :-
+	SelectedColumn > 0,
+	N is SelectedColumn - 1,
+	!,
+	checkNumberInLine(N, LineTail, 0, SequenceRes, SelectedCard).
+
+checkNumberInLine(SelectedColumn, [[empty, empty] | LineTail], Number, Sequence, SelectedCard) :-
+	!,
+	Number < 6,
+	checkSequence(Sequence).
 	
+checkNumberInLine(SelectedColumn, [], Number, Sequence, SelectedCard) :-
+	!,
+	Number < 6,
+	checkSequence(Sequence).
 	
+checkNumberInLine(SelectedColumn, [LineHead | LineTail], Number, Sequence, SelectedCard) :-
+	SelectedColumn > 5,
+	N is SelectedColumn - 1,
+	!,
+	checkNumberInLine(N, LineTail, 0, Sequence, SelectedCard).
 	
+checkNumberInLine(SelectedColumn, [LineHead | LineTail], Number, Sequence, SelectedCard) :-
+	SelectedColumn > -6,
+	N is SelectedColumn - 1,
+	N2 is Number + 1,
+	append([LineHead], Sequence, SequenceRes),
+	!,
+	checkNumberInLine(N, LineTail, N2, SequenceRes, SelectedCard).
 	
-	
+checkIfLessThanFiveInLine(0, SelectedColumn, [SelectedLine | _], SelectedCard) :- 
+	checkNumberInLine(SelectedColumn, SelectedLine, 0, Sequence, SelectedCard).
+checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, [_ | BoardTail], SelectedCard) :-
+	N is SelectedLine - 1,
+	checkIfLessThanFiveInLine(N, SelectedColumn, BoardTail, SelectedCard).

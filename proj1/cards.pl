@@ -96,6 +96,11 @@ printCard([CardHead | [CardTail]]) :-
 	%write(' | '),
 	write(TailToPrint).
 	
+printSequence([]) :- get_char(_).
+printSequence([SequenceHead | SequenceTail]) :-
+	printCard(SequenceHead), nl,
+	printSequence(SequenceTail).
+	
 %%%%%%%%% Divide the total shuffled deck into two %%%%%%%%%%%
 divideDeck(_, _, _, 0).
 divideDeck([DeckHead | DeckTail], [Deck_1Head | Deck_1Tail], Deck_2, N) :-
@@ -150,3 +155,21 @@ removeCardFromDeck([DeckHead | DeckTail], [ResultHead | ResultTail], SelectedCar
 	N1 is N + 1,
 	removeCardFromDeck(DeckTail, ResultTail, SelectedCard, N1, RemovedCard).
 	
+checkSequence([SequenceHead | SequenceTail]) :-
+	write('\nSequence of cards is:\n\n'),
+	printSequence([SequenceHead | SequenceTail]),
+	!,
+	getColor(SequenceHead, FirstColor),
+	checkEqualColors(SequenceTail, FirstColor).
+	
+%%%%%%%%%%%%%%%%%% Check if colors of a sequence are the same %%%%%%%%%%%%%%%%
+checkEqualColors([],_).
+checkEqualColors([SequenceHead | SequenceTail], Color) :-
+	getColor(SequenceHead, C),
+	!,
+	Color == C,
+	checkEqualColors(SequenceTail, Color).
+	
+%%%%%%%%%%%%%%%%%% Get color of Card %%%%%%%%%%%%%%%%%%%
+getColor([CardHead | CardTail], Color) :-
+	Color = CardHead.
