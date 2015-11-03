@@ -159,17 +159,47 @@ checkSequence([SequenceHead | SequenceTail]) :-
 	write('\nSequence of cards is:\n\n'),
 	printSequence([SequenceHead | SequenceTail]),
 	!,
-	getColor(SequenceHead, FirstColor),
-	checkEqualColors(SequenceTail, FirstColor).
+	getNotWildColor([SequenceHead | SequenceTail], FirstColor),
+	(
+		checkEqualColors(SequenceTail, FirstColor);
+		checkDiferentColors([SequenceHead | SequenceTail], 0, []);
+		
+		fail
+	).
 	
 %%%%%%%%%%%%%%%%%% Check if colors of a sequence are the same %%%%%%%%%%%%%%%%
 checkEqualColors([],_).
 checkEqualColors([SequenceHead | SequenceTail], Color) :-
 	getColor(SequenceHead, C),
 	!,
-	Color == C,
+	(Color == C; C == wild),
 	checkEqualColors(SequenceTail, Color).
 	
+checkDiferentColors([], Number, ColorList) :-
+	length(ColorList, Size),
+	!,
+	Size == Number.
+checkDiferentColors([SequenceHead | SequenceTail], Number, ColorList) :-
+	N is Number + 1,
+	getColor(SequenceHead, Color),
+	checkColor(ColorList, Color) -> append([Color], ColorList, C),
+	checkDiferentColors(SequenceTail, N, C).
+
+checkColor([], _).
+checkColor([CH | CT], Color) :-
+	!,
+	(CH \= Color; Color == wild),
+	checkColor(CT, Color).
+	
 %%%%%%%%%%%%%%%%%% Get color of Card %%%%%%%%%%%%%%%%%%%
+getNotWildColor([], Color) :-
+	Color = wild.
+getNotWildColor([SeqHead | SeqTail], Color) :-
+	getColor(SeqHead, Col),
+	(
+		Col == wild -> getNotWildColor(SeqTail, Color);
+		Col \= wild -> Color = Col
+	).
+	
 getColor([CardHead | CardTail], Color) :-
 	Color = CardHead.
