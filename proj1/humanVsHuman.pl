@@ -52,7 +52,8 @@ getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck) :-
 	(
 		(
 			checkIfACardIsInTheSpot(SelectedLine, SelectedColumn, Board),
-			checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, Board, RemovedCard)
+			checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, Board, RemovedCard),
+			checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, Board, RemovedCard)
 		) -> write('\nPosition Accepted\n'), Col is SelectedColumn, Line is SelectedLine, SelectedCard is SelectedCardTemp;
 		
 		write('\nPosition unaccepted\n'),

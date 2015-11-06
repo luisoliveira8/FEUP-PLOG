@@ -286,3 +286,41 @@ checkIfLessThanFiveInLine(0, SelectedColumn, [SelectedLine | _], SelectedCard) :
 checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, [_ | BoardTail], SelectedCard) :-
 	N is SelectedLine - 1,
 	checkIfLessThanFiveInLine(N, SelectedColumn, BoardTail, SelectedCard).
+	
+	
+%%%%%%%%%%%%%%%%%%%% Check rules in column %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], SelectedCard) :-
+	SelectedLine > 5,
+	N is SelectedLine - 1,
+	!,
+	checkIfLessThanFiveInColumn(N, SelectedColumn, BoardTail, SelectedCard).
+	
+checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], SelectedCard) :-
+	checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], [], SRes, SelectedCard),
+	printSequence(SRes).
+	
+checkNumberInColumn(_, _, [_ | []], Sequence, SRes, _) :-
+	SRes = Sequence.
+	
+checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], Sequence, SRes, SelectedCard) :-
+	getCard(BoardHead, SelectedColumn, Sequence, SRes2, SelectedLine, Check),
+	if((Check == 1), (N is SelectedLine - 1, checkNumberInColumn(N, SelectedColumn, BoardTail, SRes2, SRes, SelectedCard)), SRes = Sequence).
+	
+getCard([[empty , empty] | LineTail], 0, Sequence, SRes, Line, Check) :-
+	Line < 0,
+	SRes = Sequence,
+	Check is 0.
+	
+getCard([[empty , empty] | LineTail], 0, Sequence, SRes, Line, Check) :-
+	Line > 0,
+	SRes = [],
+	Check is 1.
+	
+getCard([LineHead | LineTail], 0, Sequence, SRes, Line, Check) :-
+	append(Sequence, [LineHead], SRes),
+	Check is 1.
+
+getCard([LineHead | LineTail], SelectedColumn, Card, SRes, Line, Check) :-
+	N is SelectedColumn - 1,
+	getCard(LineTail, N, Card, SRes, Line, Check).
+	
