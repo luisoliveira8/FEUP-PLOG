@@ -297,30 +297,40 @@ checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail
 	
 checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], SelectedCard) :-
 	checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], [], SRes, SelectedCard),
-	printSequence(SRes).
+	length(SRes, Size),
+	!, Size < 6,
+	!, checkSequence(SRes).
 	
-checkNumberInColumn(_, _, [_ | []], Sequence, SRes, _) :-
-	SRes = Sequence.
+checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | []], Sequence, SRes, SelectedCard) :-
+	getCard(BoardHead, SelectedColumn, Sequence, SRes, SelectedLine, Check, SelectedCard).
 	
 checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], Sequence, SRes, SelectedCard) :-
-	getCard(BoardHead, SelectedColumn, Sequence, SRes2, SelectedLine, Check),
+	getCard(BoardHead, SelectedColumn, Sequence, SRes2, SelectedLine, Check, SelectedCard),
 	if((Check == 1), (N is SelectedLine - 1, checkNumberInColumn(N, SelectedColumn, BoardTail, SRes2, SRes, SelectedCard)), SRes = Sequence).
 	
-getCard([[empty , empty] | LineTail], 0, Sequence, SRes, Line, Check) :-
+getCard([[empty , empty] | LineTail], 0, Sequence, SRes, Line, Check, SelectedCard) :-
 	Line < 0,
 	SRes = Sequence,
 	Check is 0.
 	
-getCard([[empty , empty] | LineTail], 0, Sequence, SRes, Line, Check) :-
+getCard([[empty , empty] | _], 0, _, SRes, Line, Check, _) :-
 	Line > 0,
 	SRes = [],
 	Check is 1.
 	
-getCard([LineHead | LineTail], 0, Sequence, SRes, Line, Check) :-
+getCard(_, 0, Sequence, SRes, 0, Check, SelectedCard) :-
+	append(Sequence, [SelectedCard], SRes),
+	Check is 1.
+	
+getCard([LineHead | _], 0, Sequence, SRes, _, Check, _) :-
 	append(Sequence, [LineHead], SRes),
 	Check is 1.
 
-getCard([LineHead | LineTail], SelectedColumn, Card, SRes, Line, Check) :-
+getCard([LineHead | LineTail], SelectedColumn, Card, SRes, Line, Check, SelectedCard) :-
 	N is SelectedColumn - 1,
-	getCard(LineTail, N, Card, SRes, Line, Check).
+	getCard(LineTail, N, Card, SRes, Line, Check, SelectedCard).
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Checks if it is the firstMove %%%%%%%%%%%%%%%%%%%%%%%%%%%
+checkFirstPlay(Board) :-
+	length(Board, BoardSize),
+	!, BoardSize == 1.

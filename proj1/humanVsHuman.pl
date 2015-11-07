@@ -50,6 +50,7 @@ getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck) :-
 	
 	
 	(
+		checkFirstPlay(Board);	
 		(
 			checkIfACardIsInTheSpot(SelectedLine, SelectedColumn, Board),
 			checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, Board, RemovedCard),
