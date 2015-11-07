@@ -219,14 +219,22 @@ fillTheRest(A, A).
 %%%%%%%%%%%%%%%%%%%%%%%%% Adds Line at the bottom %%%%%%%%%%%%%%%%%%%%%%%%%
 addLineBottom([], [Line1 | _], Size) :-
 	createEmptyLine(Line1, 0, Size).
-addLineBottom([Line1 | RLines], [Line1 | RLinesR]) :-
-	length(Line1, Size),
-	addLineBottom(RLines, RLinesR, Size).
 addLineBottom([Line1 | RLines], [Line1 | RLinesR], _) :-
 	length(Line1, Size),
 	addLineBottom(RLines, RLinesR, Size).
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%% Check if spot is enpty %%%%%%%%%%%%%%%%%%%%%%%%%
+checkSize(ElemRow, ElemCol, [BoardH | BoardT]) :-
+	length([BoardH | BoardT], Lines),
+	length(BoardH, Columns),
+	!,
+	(
+		ElemRow < 0;
+		ElemRow > Lines;
+		ElemCol < 0;
+		ElemCol > Columns
+	).
+
 checkIfACardIsInTheSpot(0, ElemCol, [BoardHead | BoardTail]) :-
 	checkIfACardIsInTheLine(ElemCol, BoardHead).
 checkIfACardIsInTheSpot(ElemRow, ElemCol, [BoardHead | BoardTail]) :-
@@ -326,7 +334,7 @@ getCard([LineHead | _], 0, Sequence, SRes, _, Check, _) :-
 	append(Sequence, [LineHead], SRes),
 	Check is 1.
 
-getCard([LineHead | LineTail], SelectedColumn, Card, SRes, Line, Check, SelectedCard) :-
+getCard([_ | LineTail], SelectedColumn, Card, SRes, Line, Check, SelectedCard) :-
 	N is SelectedColumn - 1,
 	getCard(LineTail, N, Card, SRes, Line, Check, SelectedCard).
 	
@@ -334,3 +342,13 @@ getCard([LineHead | LineTail], SelectedColumn, Card, SRes, Line, Check, Selected
 checkFirstPlay(Board) :-
 	length(Board, BoardSize),
 	!, BoardSize == 1.
+	
+getCoordinatesAroundSpot(Line1, Line2, Column1, Column2, SelectedLine, SelectedColumn, [BoardH | BoardT]) :-
+	length(BoardH, CN),
+	length([BoardH | BoardT], LN),
+	LineNumber is LN - 1,
+	ColumnNumber is CN - 1,
+	if(((SelectedLine - 1) < 0), Line1 is 0, Line1 is (SelectedLine - 1)),
+	if(((SelectedColumn - 1) < 0), Column1 is 0, Column1 is (SelectedColumn - 1)),
+	if(((SelectedLine + 1) > LineNumber), Line2 is SelectedLine, Line2 is (SelectedLine + 1)),
+	if(((SelectedColumn + 1) > ColumnNumber), Column2 is SelectedColumn, Column2 is (SelectedColumn + 1)).

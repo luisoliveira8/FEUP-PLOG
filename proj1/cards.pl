@@ -201,5 +201,5 @@ getNotWildColor([SeqHead | SeqTail], Color) :-
 		Col \= wild -> Color = Col
 	).
 	
-getColor([CardHead | CardTail], Color) :-
+getColor([CardHead | _], Color) :-
 	Color = CardHead.
