@@ -60,11 +60,6 @@ printColumnIds(A, Max) :-	%case > 9
 printColumnIds(Max, Max) :-
 	write('  ').
 
-printCard([A|B]) :-
-	means(A, A1),
-	means(B, B1),
-	write(A1),
-	write(B1).
 %#######################print a line######################%
 startPrintLine(A, I) :-
 	I > 9,
@@ -235,9 +230,9 @@ checkSize(ElemRow, ElemCol, [BoardH | BoardT]) :-
 		ElemCol > Columns
 	).
 
-checkIfACardIsInTheSpot(0, ElemCol, [BoardHead | BoardTail]) :-
+checkIfACardIsInTheSpot(0, ElemCol, [BoardHead | _]) :-
 	checkIfACardIsInTheLine(ElemCol, BoardHead).
-checkIfACardIsInTheSpot(ElemRow, ElemCol, [BoardHead | BoardTail]) :-
+checkIfACardIsInTheSpot(ElemRow, ElemCol, [_ | BoardTail]) :-
 	ElemRow > 0,
 	ElemRow1 is ElemRow - 1,
 	checkIfACardIsInTheSpot(ElemRow1, ElemCol, BoardTail).
@@ -246,36 +241,36 @@ checkIfACardIsInTheSpot(ElemRow, ElemCol, [BoardHead | BoardTail]) :-
 checkIfACardIsInTheLine(0, [[empty, empty]|_]).
 checkIfACardIsInTheLine(0, _) :-
 		fail.
-checkIfACardIsInTheLine(Elem, [LineHead | LineTail]) :-
+checkIfACardIsInTheLine(Elem, [_ | LineTail]) :-
 	Elem > 0,
 	Elem1 is Elem - 1,
 	checkIfACardIsInTheLine(Elem1, LineTail).
 	
 %%%%%%%%%%%%%%%%%%%%%%%%% Checks if There are not more than 4 in a row %%%%%%%%%%%%%%%%%%%%
 
-checkNumberInLine(0, [LineHead | LineTail], Number, Sequence, SelectedCard) :-
+checkNumberInLine(0, [_ | LineTail], Number, Sequence, SelectedCard) :-
 	append([SelectedCard], Sequence, SequenceRes),
 	N is Number + 1,
 	!,
 	checkNumberInLine(-1, LineTail, N, SequenceRes, SelectedCard).
 	
-checkNumberInLine(SelectedColumn, [[empty, empty] | LineTail], _, Sequence, SelectedCard) :-
+checkNumberInLine(SelectedColumn, [[empty, empty] | LineTail], _, _, SelectedCard) :-
 	SelectedColumn > 0,
 	N is SelectedColumn - 1,
 	!,
-	checkNumberInLine(N, LineTail, 0, SequenceRes, SelectedCard).
+	checkNumberInLine(N, LineTail, 0, _, SelectedCard).
 
-checkNumberInLine(SelectedColumn, [[empty, empty] | LineTail], Number, Sequence, SelectedCard) :-
+checkNumberInLine(_, [[empty, empty] | _], Number, Sequence, _) :-
 	!,
 	Number < 6,
 	checkSequence(Sequence).
 	
-checkNumberInLine(SelectedColumn, [], Number, Sequence, SelectedCard) :-
+checkNumberInLine(_, [], Number, Sequence, _) :-
 	!,
 	Number < 6,
 	checkSequence(Sequence).
 	
-checkNumberInLine(SelectedColumn, [LineHead | LineTail], Number, Sequence, SelectedCard) :-
+checkNumberInLine(SelectedColumn, [_ | LineTail], _, Sequence, SelectedCard) :-
 	SelectedColumn > 5,
 	N is SelectedColumn - 1,
 	!,
@@ -290,14 +285,14 @@ checkNumberInLine(SelectedColumn, [LineHead | LineTail], Number, Sequence, Selec
 	checkNumberInLine(N, LineTail, N2, SequenceRes, SelectedCard).
 	
 checkIfLessThanFiveInLine(0, SelectedColumn, [SelectedLine | _], SelectedCard) :- 
-	checkNumberInLine(SelectedColumn, SelectedLine, 0, Sequence, SelectedCard).
+	checkNumberInLine(SelectedColumn, SelectedLine, 0, _, SelectedCard).
 checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, [_ | BoardTail], SelectedCard) :-
 	N is SelectedLine - 1,
 	checkIfLessThanFiveInLine(N, SelectedColumn, BoardTail, SelectedCard).
 	
 	
 %%%%%%%%%%%%%%%%%%%% Check rules in column %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], SelectedCard) :-
+checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [_ | BoardTail], SelectedCard) :-
 	SelectedLine > 5,
 	N is SelectedLine - 1,
 	!,
@@ -310,13 +305,13 @@ checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail
 	!, checkSequence(SRes).
 	
 checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | []], Sequence, SRes, SelectedCard) :-
-	getCard(BoardHead, SelectedColumn, Sequence, SRes, SelectedLine, Check, SelectedCard).
+	getCard(BoardHead, SelectedColumn, Sequence, SRes, SelectedLine, _, SelectedCard).
 	
 checkNumberInColumn(SelectedLine, SelectedColumn, [BoardHead | BoardTail], Sequence, SRes, SelectedCard) :-
 	getCard(BoardHead, SelectedColumn, Sequence, SRes2, SelectedLine, Check, SelectedCard),
 	if((Check == 1), (N is SelectedLine - 1, checkNumberInColumn(N, SelectedColumn, BoardTail, SRes2, SRes, SelectedCard)), SRes = Sequence).
 	
-getCard([[empty , empty] | LineTail], 0, Sequence, SRes, Line, Check, SelectedCard) :-
+getCard([[empty , empty] | _], 0, Sequence, SRes, Line, Check, _) :-
 	Line < 0,
 	SRes = Sequence,
 	Check is 0.

@@ -5,7 +5,7 @@ startHumanVsHuman :-
 	createEmptyBoard(Board, 0, 1),
 	play(Deck_1, Deck_2, Board).
 
-playerMove(Deck, ResultDeck, Board, ResultBoard, A) :-	
+playerMove(Deck, ResultDeck, Board, ResultBoard) :-	
 	printBoard(Board),
 	
 	printFirstFive(Deck, NumberOfCards),
@@ -26,11 +26,11 @@ playerMove(Deck, ResultDeck, Board, ResultBoard, A) :-
 play(Deck_1, Deck_2, Board) :-
 	
 	printPlayer1,
-	playerMove(Deck_1, ResultDeck_1, Board, ResultBoard_1, A),
+	playerMove(Deck_1, ResultDeck_1, Board, ResultBoard_1),
 	checkBoardSize(ResultBoard_1, ResultBoard_2),
 	
 	printPlayer2,
-	playerMove(Deck_2, ResultDeck_2, ResultBoard_2, ResultBoard_3, A),
+	playerMove(Deck_2, ResultDeck_2, ResultBoard_2, ResultBoard_3),
 	checkBoardSize(ResultBoard_3, ResultBoard_4),
 	play(ResultDeck_1, ResultDeck_2, ResultBoard_4).
 	
@@ -52,7 +52,6 @@ getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck) :-
 	(
 		checkFirstPlay(Board);	
 		(
-			trace,
 			checkIfACardIsInTheSpot(SelectedLine, SelectedColumn, Board),
 			getCoordinatesAroundSpot(Line1, Line2, Column1, Column2, SelectedLine, SelectedColumn, Board),
 			(

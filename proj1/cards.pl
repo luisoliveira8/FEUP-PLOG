@@ -93,7 +93,6 @@ printCard([CardHead | [CardTail]]) :-
 	means(CardHead, HeadToPrint),
 	means(CardTail, TailToPrint),
 	write(HeadToPrint),
-	%write(' | '),
 	write(TailToPrint).
 	
 printSequence([]) :- get_char(_).
