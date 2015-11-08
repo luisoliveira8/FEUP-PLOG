@@ -155,10 +155,17 @@ removeCardFromDeck([DeckHead | DeckTail], [ResultHead | ResultTail], SelectedCar
 	removeCardFromDeck(DeckTail, ResultTail, SelectedCard, N1, RemovedCard).
 	
 checkSequence([SequenceHead | SequenceTail]) :-
-	write('\nSequence of cards is:\n\n'),
-	printSequence([SequenceHead | SequenceTail]),
+	
+	!,getNotWildColor([SequenceHead | SequenceTail], FirstColor),
+	!,getNotWildSymbol([SequenceHead | SequenceTail], FirstSymbol),
+	!, 
+	(
+		checkEqualSymbols(SequenceTail, FirstSymbol);
+		checkDiferentSymbols([SequenceHead | SequenceTail], 0, []);
+		
+		fail
+	),
 	!,
-	getNotWildColor([SequenceHead | SequenceTail], FirstColor),
 	(
 		checkEqualColors(SequenceTail, FirstColor);
 		checkDiferentColors([SequenceHead | SequenceTail], 0, []);
@@ -202,3 +209,41 @@ getNotWildColor([SeqHead | SeqTail], Color) :-
 	
 getColor([CardHead | _], Color) :-
 	Color = CardHead.
+	
+%%%%%%%%%%%%%%%%% Get symbol of a Card %%%%%%%%%%%%%%%%%%%
+getNotWildSymbol([], Symbol) :-
+	Symbol = wild.
+getNotWildSymbol([SeqHead | SeqTail], Symbol) :-
+	getSymbol(SeqHead, Sym),
+	(
+		Sym == wild -> getNotWildSymbol(SeqTail, Symbol);
+		Sym \= wild -> Symbol = Sym
+	).
+	
+getSymbol([_ | [CardTail | _]], Symbol) :-
+	Symbol = CardTail.
+	
+%%%%%%%%%%%%%%%%%% Check if symbols of a sequence are the same %%%%%%%%%%%%%%%%
+checkEqualSymbols([],_).
+checkEqualSymbols([SequenceHead | SequenceTail], Symbol) :-
+	getSymbol(SequenceHead, S),
+	!,
+	(Symbol == S; S == wild),
+	checkEqualSymbols(SequenceTail, Symbol).
+	
+checkDiferentSymbols([], Number, SymbolList) :-
+	length(SymbolList, Size),
+	!,
+	Size == Number.
+checkDiferentSymbols([SequenceHead | SequenceTail], Number, SymbolList) :-
+	N is Number + 1,
+	getSymbol(SequenceHead, Symbol),
+	checkSymbol(SymbolList, Symbol) -> append([Symbol], SymbolList, S),
+	checkDiferentSymbols(SequenceTail, N, S).
+
+checkSymbol([], _).
+checkSymbol([SH | ST], Symbol) :-
+	!,
+	(SH \= Symbol; Symbol == wild),
+	checkColor(ST, Symbol).
+	
