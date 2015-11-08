@@ -245,3 +245,5 @@ checkSymbol([SH | ST], Symbol) :-
 	(SH \= Symbol; Symbol == wild),
 	checkColor(ST, Symbol).
 	
+checkIfWild([Head | Tail]) :-
+	(Head == wild; Tail == wild).

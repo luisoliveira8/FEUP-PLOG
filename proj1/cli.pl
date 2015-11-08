@@ -45,7 +45,28 @@ infoMenu :-
 	get_char(_),   % Waits for any input
 	mainMenu.
 
+%%%%%%%%%%%%%%%%%%%%% Choose what to do in move %%%%%%%%%%%%%%%%%%%%%%%%%%
+moveMenu(Choice) :-
+	printMoveMenu,
+	getChar(In),
+	(
+		In = '1' -> write('Chose to add Cards\n'), Choice is 1;
+		In = '2' -> write('Chose to swap with wild Cards\n'), Choice is 2;
+		In = '3' -> write('Chose to Pass... and trade\n'), Choice is 3;
+		
+		moveMenu(Choice)
+	).
 
+%%%%%%%%%%%%%%%%%%%%%%%% Print ChoiceMenu %%%%%%%%%%%%%%%%%%%%%	
+printMoveMenu :-
+	write('\n\nChoose what to do in your move\n'),
+	write('                                    \n'),
+	write('    1 - Add Cards                   \n'),
+	write('    2 - Swap with Wild Cards        \n'),
+	write('    3 - Pass... and trade           \n'),
+	write('                                    \n').
+		
+	
 %%%%%%%%%%%%%%%%%%%%%%%% Print MainMenu %%%%%%%%%%%%%%%%%%%%%	
 printMainMenu :-
 	write('========================================\n'),

@@ -347,3 +347,16 @@ getCoordinatesAroundSpot(Line1, Line2, Column1, Column2, SelectedLine, SelectedC
 	if(((SelectedColumn - 1) < 0), Column1 is 0, Column1 is (SelectedColumn - 1)),
 	if(((SelectedLine + 1) > LineNumber), Line2 is SelectedLine, Line2 is (SelectedLine + 1)),
 	if(((SelectedColumn + 1) > ColumnNumber), Column2 is SelectedColumn, Column2 is (SelectedColumn + 1)).
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Get a card from the board %%%%%%%%%%%%%%%%%%%%%%%%%%%
+getCardFromBoard(0, Col, [BoardHead | BoardTail], CardOnPlace) :-
+	getCardFromLine(Col, BoardHead, CardOnPlace).
+getCardFromBoard(Line, Col, [BoardHead | BoardTail], CardOnPlace) :-
+	N is Line - 1,
+	getCardFromBoard(N, Col, BoardTail, CardOnPlace).
+	
+getCardFromLine(0, [CardHead | CardTail], CardOnPlace) :-
+	CardOnPlace = CardHead.
+getCardFromLine(Col, [LineHead | LineTail], CardOnPlace) :-
+	N is Col - 1,
+	getCardFromLine(N, LineTail, CardOnPlace).
