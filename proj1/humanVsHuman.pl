@@ -64,21 +64,15 @@ chooseCardsToSwap(Deck, ResultDeck, Board, ResultBoard) :-
 	write('\nYou still have '),
 	write(DeckLength),
 	write(' Card(s)\nYou can try to swap '),
-	
 	write(NumberOfCards),
 	write(' cards\n\n'),
-	
 	!,
 	getCorrectPosToSwap(Col, Line, SelectedCard, NumberOfCards, Board, Deck, Check),
 	!,
-	
 	if(Check == 0, (
 		removeCardFromDeck(Deck, ResultDeckT1, SelectedCard, 0, RemovedCard),
-		
 		getCardFromBoard(Line, Col, Board, CardOnPlace),
-		
 		append([CardOnPlace], ResultDeckT1, ResultDeckT2),
-		
 		putOnBoard(Line, Col, RemovedCard, Board, ResultBoardT1),
 			
 		write('\nDo you want to swap more cards (0. - Yes | 1. - No)? '),
@@ -96,7 +90,7 @@ play(Deck_1, Deck_2, Board) :-
 	
 	printPlayer1,
 	printBoard(Board),
-	print5Cards(Deck_1, 5, 0, NumberOfCards),
+	print5Cards(Deck_1, 5, 0, _),
 	
 	moveMenu(Choice),
 	(
@@ -104,19 +98,23 @@ play(Deck_1, Deck_2, Board) :-
 		Choice == 2 -> swapCards(Deck_1, ResultDeck_1, Board, ResultBoard_1);
 		Choice == 3 -> (swapCardsInDeck(Deck_1, ResultDeck_1), ResultBoard_1 = Board)
 	),
-	
-	printPlayer2,
-	printBoard(ResultBoard_1),
-	print5Cards(Deck_2, 5, 0, NumberOfCards),
-	
-	moveMenu(Choice2),
-	(
-		Choice2 == 1 -> playerMove(Deck_2, ResultDeck_2, ResultBoard_1, ResultBoard_2);
-		Choice2 == 2 -> swapCards(Deck_2, ResultDeck_2, ResultBoard_1, ResultBoard_2);
-		Choice2 == 3 -> (swapCardsInDeck(Deck_2, ResultDeck_2), ResultBoard_2 = ResultBoard_1)
-	),
-	
-	play(ResultDeck_1, ResultDeck_2, ResultBoard_2).
+	checkVictory(ResultDeck_1, Check),
+	if(Check == 1,
+		(
+			printPlayer2,
+			printBoard(ResultBoard_1),
+			print5Cards(Deck_2, 5, 0, _),
+			
+			moveMenu(Choice2),
+			(
+				Choice2 == 1 -> playerMove(Deck_2, ResultDeck_2, ResultBoard_1, ResultBoard_2);
+				Choice2 == 2 -> swapCards(Deck_2, ResultDeck_2, ResultBoard_1, ResultBoard_2);
+				Choice2 == 3 -> (swapCardsInDeck(Deck_2, ResultDeck_2), ResultBoard_2 = ResultBoard_1)
+			),
+			
+			checkVictory(ResultDeck_2, Check2),
+			if(Check2 == 1, play(ResultDeck_1, ResultDeck_2, ResultBoard_2), winMenu2)
+			),winMenu1).
 	
 %%%%%%%%%%%%%%%%%%%%% Gets correct position %%%%%%%%%%%%%%%%%%%%%%%%%%
 getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck, Check) :-
@@ -206,3 +204,9 @@ chooseToSwap(Deck, ResultDeck_1, N) :-
 	get_char(_),
 	if(Answer == '0', N1 is N - 1, N1 is 0),
 	chooseToSwap(TempDeck, ResultDeck_1, N1).
+	
+checkVictory([Deck | _], Check) :-
+	chec(Deck, Check).
+	
+chec([C | _], Check) :-
+	if(nonvar(C), Check is 1, Check is 0).

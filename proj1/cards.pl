@@ -126,7 +126,7 @@ printDeck([DeckHead | DeckTail], A) :-
 %%%%%%%%%%%% Prints N First Cards of the Deck %%%%%%%%
 print5Cards(_, MaxNum, MaxNum, MaxNum).
 print5Cards([], _, NumberOfCards, NRes) :-
-	NRes is NumberOfCards.
+	!, NRes is NumberOfCards.
 	
 print5Cards([DeckHead | DeckTail], MaxNum, NumberOfCards, NRes) :-
 	write(NumberOfCards),
@@ -142,7 +142,7 @@ printFirstFive(Deck, NumberOfCardsLeft) :-
 	print5Cards(Deck, 5, NumberOfCardsLeft).
 
 %%%%%%%%%%% Removes the selected card from the deck %%%%%%%%%%
-removeCardFromDeck([],[],_, _, _).
+removeCardFromDeck([],_,_, _, _).
 removeCardFromDeck([DeckHead | DeckTail], [ResultHead | ResultTail], N, N, RemovedCard) :-
 	N1 is N + 1,
 	RemovedCard = DeckHead,

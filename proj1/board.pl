@@ -132,9 +132,9 @@ putOnBoard(ElemRow, ElemCol, NewElem, [RowAtTheHead|RemainingRows], [RowAtTheHea
 	putOnBoard(ElemRow1, ElemCol, NewElem, RemainingRows, ResultRemainingRows).
 	
 %%%%%%%%%%%%%%%%%%%%%%%%% Check Board %%%%%%%%%%%%%%%%%%%%%%%%%
-checkBoardSize(Board, ResultBoard4) :-
-	if(checkUpperLine(Board), addLineTop(Board, ResultBoard1), ResultBoard1 = Board),
-	if(checkLowerLine(ResultBoard1), addLineBottom(ResultBoard1, ResultBoard2), ResultBoard2 = ResultBoard1),
+checkBoardSize(Board, ResultBoard4) :- 
+	if(checkUpperLine(Board), addLineTop(Board, ResultBoard1), ResultBoard1 = Board), 
+	if(checkLowerLine(ResultBoard1), addLineBottom(ResultBoard1, ResultBoard2, _), ResultBoard2 = ResultBoard1),
 	if(checkLeftColumn(ResultBoard2), ResultBoard3 = ResultBoard2, addColumnLeft(ResultBoard2, ResultBoard3)),
 	if(checkRightColumn(ResultBoard3), ResultBoard4 = ResultBoard3, addColumnRight(ResultBoard3, ResultBoard4)).
 	
@@ -349,14 +349,14 @@ getCoordinatesAroundSpot(Line1, Line2, Column1, Column2, SelectedLine, SelectedC
 	if(((SelectedColumn + 1) > ColumnNumber), Column2 is SelectedColumn, Column2 is (SelectedColumn + 1)).
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Get a card from the board %%%%%%%%%%%%%%%%%%%%%%%%%%%
-getCardFromBoard(0, Col, [BoardHead | BoardTail], CardOnPlace) :-
+getCardFromBoard(0, Col, [BoardHead | _], CardOnPlace) :-
 	getCardFromLine(Col, BoardHead, CardOnPlace).
-getCardFromBoard(Line, Col, [BoardHead | BoardTail], CardOnPlace) :-
+getCardFromBoard(Line, Col, [_ | BoardTail], CardOnPlace) :-
 	N is Line - 1,
 	getCardFromBoard(N, Col, BoardTail, CardOnPlace).
 	
-getCardFromLine(0, [CardHead | CardTail], CardOnPlace) :-
+getCardFromLine(0, [CardHead | _], CardOnPlace) :-
 	CardOnPlace = CardHead.
-getCardFromLine(Col, [LineHead | LineTail], CardOnPlace) :-
+getCardFromLine(Col, [_ | LineTail], CardOnPlace) :-
 	N is Col - 1,
 	getCardFromLine(N, LineTail, CardOnPlace).
