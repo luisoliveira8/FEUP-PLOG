@@ -124,19 +124,17 @@ printDeck([DeckHead | DeckTail], A) :-
 	printDeck(DeckTail, A1).
 	
 %%%%%%%%%%%% Prints N First Cards of the Deck %%%%%%%%
-print5Cards(_,0, NumberOfCardsLeft) :-
-	NumberOfCardsLeft is 5.
-print5Cards([], A, NumberOfCardsLeft) :-
-	NumberOfCardsLeft is 5 - A.
+print5Cards(_, MaxNum, MaxNum, MaxNum).
+print5Cards([], _, NumberOfCards, NRes) :-
+	NRes is NumberOfCards.
 	
-print5Cards([DeckHead | DeckTail], N, NumberOfCardsLeft) :-
-	N1 is N - 1,
-	P is 5 - N,
-	write(P),
+print5Cards([DeckHead | DeckTail], MaxNum, NumberOfCards, NRes) :-
+	write(NumberOfCards),
 	write(' - '),
 	printCard(DeckHead),
 	nl,
-	print5Cards(DeckTail, N1, NumberOfCardsLeft).
+	M is NumberOfCards + 1,
+	print5Cards(DeckTail, MaxNum, M, NRes).
 	
 %%%%%%%%%%%% Prints the first 5 cards %%%%%%%%%%%	
 printFirstFive(Deck, NumberOfCardsLeft) :-
