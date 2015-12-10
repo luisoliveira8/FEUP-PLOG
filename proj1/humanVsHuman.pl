@@ -144,7 +144,6 @@ getCorrectPos(Col, Line, SelectedCard, NumberOfCards, Board, Deck, Check) :-
 			checkIfLessThanFiveInLine(SelectedLine, SelectedColumn, Board, RemovedCard),
 			checkIfLessThanFiveInColumn(SelectedLine, SelectedColumn, Board, RemovedCard)
 		) -> write('\nPosition Accepted\n'), Col is SelectedColumn, Line is SelectedLine, SelectedCard is SelectedCardTemp, Check is 0;
-		
 		write('\nPosition unaccepted\n'),
 		
 		write('\nDo you want to try again (0. - Yes | 1. - No)? '),
@@ -207,6 +206,5 @@ chooseToSwap(Deck, ResultDeck_1, N) :-
 	
 checkVictory([Deck | _], Check) :-
 	chec(Deck, Check).
-	
 chec([C | _], Check) :-
 	if(nonvar(C), Check is 1, Check is 0).

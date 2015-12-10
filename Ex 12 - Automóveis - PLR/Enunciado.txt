@@ -1,0 +1,8 @@
+Ex 12 - PLR - Automóveis
+
+	*	4 Amarelos, 2 Verdes, 3 Vermelhos, 3 Azuis;
+	*	1º e último têm a mesma cor;
+	*	2º e penúltimo têm a mesma cor;
+	*	5º é azul;
+	*	Cada 3 automóveis têm cores =/=s;
+	*	Sequência Amarelo-Verde-Vermelho-Azul ocorre apenas 1 vez.
