@@ -35,3 +35,31 @@ solveProb(LOriginal, LRes, N) :-
 	checkSum(LResTranspose, N),
 	flatten(LRes, LR),
 	labeling([],LR).
+
+create4RandomRings(_,0).
+create4RandomRings([LHead | LTail], C) :-
+	length(LHead, 9),
+	C1 is C - 1,
+	create4RandomRings(LTail, C1).
+
+setDomain([], _, _).
+setDomain([LHead | LTail], NMin, NMax) :-
+	domain(LHead, NMin, NMax),
+	setDomain(LTail, NMin, NMax).
+
+createRandomPuzzle(L, Max) :-
+	create4RandomRings(L, 4),
+	setDomain(L, 0, Max),
+	transpose(L, LTransposed),
+	checkSum(LTransposed, 20),
+	flatten(L, LRes),
+	labeling([], LRes).
+
+createUnsolvedRandomPuzzle(L, Max) :-
+	create4RandomRings(L, 4),
+	setDomain(L, 0, Max),
+	sortingAll(L, L2),
+	transpose(L2, LTransposed),
+	checkSum(LTransposed, 20),
+	flatten(L2, LRes),
+	labeling([], LRes).
